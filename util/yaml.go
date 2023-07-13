@@ -9,23 +9,23 @@ import (
 func yaml2jsonSpec(yamlFile []byte) map[string]interface{} {
 	var data map[string]interface{}
 	yamlErr := json.Unmarshal(yamlFile, &data)
-	failOnError(yamlErr, "Failed unmarshal yaml")
+	FailOnError(yamlErr, "Failed unmarshal yaml")
 
 	jsonData := make(map[string]interface{})
 	jsonData["wolkflow"] = data["spec"].(map[string]interface{})["templates"]
 
 	jsonBytes, jsonMarshalErr := json.Marshal(jsonData)
-	failOnError(jsonMarshalErr, "Failed Marshal json")
+	FailOnError(jsonMarshalErr, "Failed Marshal json")
 
 	var templates map[string]interface{}
 	jsonUnmarshalErr := json.Unmarshal(jsonBytes, &templates)
-	failOnError(jsonUnmarshalErr, "Failed UnMarshal json")
+	FailOnError(jsonUnmarshalErr, "Failed UnMarshal json")
 	return templates
 }
 
 func parseResource(resource map[string]interface{}) (map[string]interface{}, map[string]interface{}) {
 	cSpec, containerMarshalErr := json.Marshal(resource)
-	failOnError(containerMarshalErr, "Failed Marshal json")
+	FailOnError(containerMarshalErr, "Failed Marshal json")
 
 	requestSpec := gjson.Get(string(cSpec), "resources.requests").Value().(map[string]interface{})
 	limitSpec := gjson.Get(string(cSpec), "resources.limits").Value().(map[string]interface{})
