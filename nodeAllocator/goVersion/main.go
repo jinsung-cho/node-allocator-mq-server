@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"log"
 	"math/rand"
@@ -74,7 +73,6 @@ func subscribe(byteCh chan<- []byte) {
 
 	for msg := range msgs {
 		body := msg.Body
-		fmt.Println(string(body))
 		byteCh <- body
 	}
 
@@ -149,7 +147,6 @@ func publish(byteChV2 <-chan []byte, queueNameCh <-chan string) {
 			ch, err := conn.Channel()
 			failOnError(err, "Failed to open a channel")
 			defer ch.Close()
-			fmt.Println(queueName)
 			q, err := ch.QueueDeclare(
 				queueName, // name
 				false,     // durable
