@@ -2,6 +2,7 @@ package controller
 
 import (
 	"backend/util"
+	"bytes"
 	"crypto/md5"
 	"encoding/hex"
 	"encoding/json"
@@ -43,6 +44,24 @@ func ParseYamlFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func RunWorkflow(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("RunWorkflow")
-	fmt.Fprint(w, "RunWorkflow")
+	body, _ := ioutil.ReadAll(r.Body)
+
+	resp, err := http.Post("http://localhost:8008/run", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	defer resp.Body.Close()
+
+	responseBody, _ := ioutil.ReadAll(resp.Body)
+
+	var responseJson map[string]interface{}
+	json.Unmarshal(responseBody, &responseJson)
+
+	if responseJson["status"] == "success" {
+		fmt.Fprintln(w, "Workflow executed successfully.")
+	} else {
+		fmt.Fprintln(w, "Failed to execute workflow.")
+	}
 }
