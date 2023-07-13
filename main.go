@@ -33,5 +33,5 @@ func main() {
 	r.HandleFunc("/yaml", controller.ParseYamlFile).Methods("POST")
 	r.HandleFunc("/run", controller.RunWorkflow).Methods("POST")
 
-	http.ListenAndServe(":8000", handler)
+	http.ListenAndServe(":8888", handler)
 }
