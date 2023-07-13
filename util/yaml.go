@@ -4,15 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/tidwall/gjson"
-
-	"log"
 )
-
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Panicf("%s: %s", msg, err)
-	}
-}
 
 func yaml2jsonSpec(yamlFile []byte) map[string]interface{} {
 	var data map[string]interface{}
@@ -77,4 +69,27 @@ func ParseWorkflowInfo(b []byte, hash string) []byte {
 
 	finalResult, _ := json.Marshal(result)
 	return finalResult
+}
+
+func ModifyWorkflow(origin []byte, new []byte) map[string]interface{} {
+	var modifiedWorkflow Workflow
+	_ = json.Unmarshal(new, &modifiedWorkflow)
+
+	templates := gjson.Get(string(origin), "spec.templates").Value().([]interface{})
+
+	var modifiedContainerInfo []ContainerInfo
+	modifiedContainerInfo = modifiedWorkflow.Containers
+	for _, container := range templates {
+		containerMap, _ := container.(map[string]interface{})
+		for _, mdContainer := range modifiedContainerInfo {
+			if containerMap["name"] == mdContainer.Name {
+				containerMap["nodeSelector"] = mdContainer.NodeSelector
+			}
+		}
+	}
+	var tmp map[string]interface{}
+	_ = json.Unmarshal(origin, &tmp)
+	tmp["spec"].(map[string]interface{})["templates"] = templates
+
+	return tmp
 }
