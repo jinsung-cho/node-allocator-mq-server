@@ -31,11 +31,10 @@ func ParseYamlFile(w http.ResponseWriter, r *http.Request) {
 
 	select {
 	case res := <-byteCh:
-		var workflow util.Workflow
-		fmt.Println(string(res))
-		_ = json.Unmarshal(res, &workflow)
+		result := util.ModifyWorkflow(body, res)
+
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(workflow)
+		json.NewEncoder(w).Encode(result)
 		return
 	case <-time.After(3 * time.Second):
 		http.Error(w, "timeout", http.StatusRequestTimeout)
