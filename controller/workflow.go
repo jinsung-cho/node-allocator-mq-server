@@ -9,7 +9,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 func ParseYamlFile(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +48,10 @@ func ParseYamlFile(w http.ResponseWriter, r *http.Request) {
 
 func RunWorkflow(w http.ResponseWriter, r *http.Request) {
 	body, _ := ioutil.ReadAll(r.Body)
-
-	resp, err := http.Post("http://localhost:8008/run", "application/json", bytes.NewBuffer(body))
+	env_err := godotenv.Load(".env")
+	util.FailOnError(env_err, ".env Load fail")
+	pythonPort := os.Getenv("PYTHON_SERVER_PORT")
+	resp, err := http.Post("http://localhost:" + string(pythonPort) + "/run", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

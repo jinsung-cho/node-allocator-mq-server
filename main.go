@@ -19,6 +19,7 @@ func main() {
 	env_err := godotenv.Load(".env")
 	util.FailOnError(env_err, ".env Load fail")
 	hostIP := os.Getenv("HOST_IP")
+	goPort := os.Getenv("GO_SERVER_PORT")
 
 	r := mux.NewRouter()
 	corsConfig := cors.New(cors.Options{
@@ -33,5 +34,5 @@ func main() {
 	r.HandleFunc("/yaml", controller.ParseYamlFile).Methods("POST")
 	r.HandleFunc("/run", controller.RunWorkflow).Methods("POST")
 
-	http.ListenAndServe(":8888", handler)
+	http.ListenAndServe(":" + string(goPort), handler)
 }
