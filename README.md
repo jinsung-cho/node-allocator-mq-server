@@ -1,6 +1,8 @@
 # node-allocator-mq-server
 
 ## 프로젝트 소개
+![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/2234fc1e-dbdb-4d8e-b91d-f338b3fdb5ed)
+
 - Argo workflow 실험을 위한 최적 노드 배치와 실험을 진행할 수 있는 API를 제공하는 go 및 python으로 작성된 백엔드 서버입니다.
 - 제공하는 API의 상세 내용은 다음과 같습니다.
   - 워크로드 수행을 위한 매니패스트 파일 파싱 및 최적 노드 배치 결과 반환을 위한 API 제공
@@ -59,6 +61,8 @@
 
 ## REST API
 **POST - {SERVER_IP}:{SERVER_PORT}/yaml**
+![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/04084c2c-1cc6-43e9-b7c4-de8d1e124281)
+
 - body (required)
   - argo workflow json
     - example   
@@ -185,6 +189,8 @@
       ```
             
 **POST - {SERVER_IP}:{SERVER_PORT}/run**
+![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/30096f3f-64d0-4859-9398-650faa895e95)
+
 - body (requiered)
   - argo workflow json with nodeSelector
 - response
