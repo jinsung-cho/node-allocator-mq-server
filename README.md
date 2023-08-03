@@ -1,7 +1,9 @@
 # node-allocator-mq-server
 
 ## 프로젝트 소개
-![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/2234fc1e-dbdb-4d8e-b91d-f338b3fdb5ed)
+![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/f6fdafc6-4ea1-411e-97b5-0d392a1f0141)
+
+
 
 - Argo workflow 실험을 위한 최적 노드 배치와 실험을 진행할 수 있는 API를 제공하는 go 및 python으로 작성된 백엔드 서버입니다.
 - 제공하는 API의 상세 내용은 다음과 같습니다.
@@ -11,7 +13,7 @@
 ## Requirements
 - golang version 1.17.0 or higher
 - python version 3.6.0 or higher
-- running argo workflow
+- running argo workflow server
   
 ## 디렉토리 구조
 
@@ -61,7 +63,8 @@
 
 ## REST API
 **POST - {SERVER_IP}:{SERVER_PORT}/yaml**
-![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/04084c2c-1cc6-43e9-b7c4-de8d1e124281)
+![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/c813c095-5958-47c0-9430-dbb9b9448d6f)
+
 
 - body (required)
   - argo workflow json
@@ -121,7 +124,7 @@
                  생략...
           ```
             
-- response
+- response (nodeSelector 관련 내용 추가)
   - argo workflow json with nodeSelector
     - example 
       ```json
@@ -189,7 +192,8 @@
       ```
             
 **POST - {SERVER_IP}:{SERVER_PORT}/run**
-![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/30096f3f-64d0-4859-9398-650faa895e95)
+![image](https://github.com/jinsung-cho/node-allocator-mq-server/assets/57334203/f2c06c02-81ce-4e81-ad10-f0834d458f61)
+
 
 - body (requiered)
   - argo workflow json with nodeSelector
@@ -198,12 +202,13 @@
   - failed - status 500
      
 ## 실행방법
-1. $ git clone [ssh url] or [https url]
-2. $ mv .env-sample .env
-3. $ vim .env
-4. Modify .env file
+1. `$ git clone https://github.com/jinsung-cho/node-allocator-mq-server.git`
+2. `$ mv .env-sample .env`
+3. `$ vim .env`
+4. .env 파일 수정
+   
 ```
-# Before
+######## 초기 상태 ########
 MQ_ID=rabbit
 MQ_PASSWD=rabbit
 MQ_IP=localhost
@@ -214,7 +219,8 @@ ARGO_WORKFLOW_PORT=8888
 GO_SERVER_PORT=11111
 PYTHON_SERVER_PORT=22222
 
-# 각 파라미터 설명
+
+######## 각 파라미터 설명 ########
 MQ_ID=rabbitmq 계정의 ID (rabbimq/docker-compose.yaml 파일의 RABBITMQ_DEFAULT_USER 동일해야함)
 MQ_PASSWD=rabbitmq 계정의 Passwd (rabbimq/docker-compose.yaml 파일의 RABBITMQ_DEFAULT_PASS 동일해야함)
 MQ_IP=rabbitmq가 동작하는 PC의 IP
@@ -225,7 +231,8 @@ ARGO_WORKFLOW_PORT=실행중인 Argo workflow의 Port
 GO_SERVER_PORT=go API 서버에서 사용할 Port
 PYTHON_SERVER_PORT=Argo workflow와 연결되는 python API 서버에서 사용할 Port (GO_SERVER_PORT와 중복되어선 안됨)
 
-# example of modification
+
+######## 수정 예 ########
 MQ_ID=root
 MQ_PASSWD=rabbit
 MQ_IP=localhost
@@ -236,4 +243,5 @@ ARGO_WORKFLOW_PORT=30000
 GO_SERVER_PORT=8080
 PYTHON_SERVER_PORT=8888
 ```
-5. $ ./start.sh
+
+5. `$ ./start.sh`
