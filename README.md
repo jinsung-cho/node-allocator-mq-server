@@ -45,7 +45,7 @@
     ├── struct.go
     └── yaml.go
 ```
-- **argo_request_server.py** -: argo workflow의 실험을 시작할 수 있도록 go 기반 API 서버와 연계하여 동작하는 python 기반 서버 코드
+- **argo_request_server.py** -: argo workflow의 workflow list 수신 및 workflow 실험을 시작할 수 있도록 go 기반 API 서버와 연계하여 동작하는 python 기반 서버 코드
 - **controller** : http request를 처리하는 함수가 작성된 코드 디렉토리
     - **workflow.go** : workflow 처리에 대한 코드가 작성된 go 코드
 - **main.go** : go 기반 API 서버 실행을 위한 시작 코드
