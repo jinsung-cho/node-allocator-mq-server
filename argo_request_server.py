@@ -96,4 +96,5 @@ def run_workflow():
         return {"status": "failure", "error": str(e)}
     
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=30101, debug=True)
+    port = os.getenv("PYTHON_SERVER_PORT")
+    app.run(host='0.0.0.0', port=port)
