@@ -64,7 +64,6 @@ def get_workflow_info():
                 
                 split_duration = str(datetime.timedelta(seconds=end_time - start_time)).split(':')
                 split_duration = [str(int(x)) for x in split_duration]
-                print(split_duration)
                 if split_duration[0]=='0':
                     if split_duration[1]=='0':
                         workflow_duration = split_duration[2] + 's'
