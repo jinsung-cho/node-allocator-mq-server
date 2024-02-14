@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
+
 )
 
 func main() {
@@ -32,7 +33,7 @@ func main() {
 	handler := corsConfig.Handler(r)
 
 	r.HandleFunc("/yaml", controller.ParseYamlFile).Methods("POST")
-	r.HandleFunc("/run", controller.RunWorkflow).Methods("POST")
+	r.HandleFunc("/api/v1/run", controller.RunWorkflow).Methods("POST")
 
 	http.ListenAndServe(":" + string(goPort), handler)
 }
