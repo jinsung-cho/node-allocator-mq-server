@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-
 	"github.com/joho/godotenv"
 )
 
@@ -36,7 +35,6 @@ func ParseYamlFile(w http.ResponseWriter, r *http.Request) {
 	select {
 	case res := <-byteCh:
 		result := util.ModifyWorkflow(body, res)
-
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(result)
 		return
@@ -51,7 +49,7 @@ func RunWorkflow(w http.ResponseWriter, r *http.Request) {
 	env_err := godotenv.Load(".env")
 	util.FailOnError(env_err, ".env Load fail")
 	pythonPort := os.Getenv("PYTHON_SERVER_PORT")
-	resp, err := http.Post("http://localhost:" + string(pythonPort) + "/run", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post("http://localhost:" + string(pythonPort) + "/api/v1/run", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
