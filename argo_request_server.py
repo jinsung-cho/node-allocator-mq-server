@@ -17,8 +17,8 @@ def load_argo_info():
     argowfIp = os.getenv("ARGO_WORKFLOW_IP")
     argowfPort = os.getenv("ARGO_WORKFLOW_PORT")
     configuration = argo_workflows.Configuration(host="https://"+argowfIp+":"+argowfPort)
-    
     configuration.verify_ssl = False
+    
     api_client = argo_workflows.ApiClient(configuration)
     api_instance = workflow_service_api.WorkflowServiceApi(api_client)
     return api_instance
@@ -27,23 +27,23 @@ def load_argo_info():
 def get_workflow_info():
     
     api_instance= load_argo_info()
-    
     namespace = os.getenv("ARGO_NAMESPACE")
     workflow_list = api_instance.list_workflows(namespace, _check_return_type=False).to_dict()
 
-    """ preprocessing workflow information
-    argo_table after preprocessing
-    {
-        '0':{
-            'name' : 'workflow_1',
-            'status' : 'falied',
-            'duration' : '6m 21s'
-        },
-        '1':{
-            ...
-        }
-    }
-    """
+    # """ preprocessing workflow information
+    # argo_table after preprocessing
+    # {
+    #     '0':{
+    #         'name' : 'workflow_1',
+    #         'status' : 'falied',
+    #         'duration' : '6m 21s'
+    #     },
+    #     '1':{
+    #         ...
+    #     }
+    # }
+    # """
+    
     if workflow_list['items']!=None:
         try:
             argo_table={"status":"succeeded",
@@ -85,9 +85,12 @@ def get_workflow_info():
 def run_workflow():
     try:
         manifest = request.get_json()
+        print(manifest)
         api_instance = load_argo_info()
+        namespace = os.getenv("ARGO_NAMESPACE")
+
         api_response = api_instance.create_workflow(
-            namespace="argo-test",
+            namespace=namespace,
             body=IoArgoprojWorkflowV1alpha1WorkflowCreateRequest(workflow=manifest, _check_type=False),
             _check_return_type=False)
         return {"status": "success", "response": api_response.to_dict()}
