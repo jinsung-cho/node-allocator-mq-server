@@ -12,9 +12,13 @@ docker-compose -f ./rabbitmq/docker-compose.yaml up -d
 pip3 install -r requirements.txt
 python3 argo_request_server.py &
 
-# RUN node allocator
+# RUN node allocator(go)
 cd nodeAllocator/goVersion 
 go run . &
+
+# # RUN node allocator(python)
+# cd nodeAllocator/pythonVersion
+# python3 main.py &
 
 # RUN go backend server
 cd ../..
