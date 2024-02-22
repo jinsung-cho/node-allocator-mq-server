@@ -1,39 +1,18 @@
 package main
 
 import (
-	"backend/util"
 	"log"
-	"net/http"
-	"os"
+	"server/internal/api"
+	"server/pkg/handler"
 
-	"backend/controller"
-
-	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
-	"github.com/rs/cors"
-
 )
 
 func main() {
-	log.Println("Server started on: server")
-
 	env_err := godotenv.Load(".env")
-	util.FailOnError(env_err, ".env Load fail")
-	hostIP := os.Getenv("HOST_IP")
-	goPort := os.Getenv("GO_SERVER_PORT")
+	handler.CheckErrorAndPanic(env_err, ".env Load fail")
 
-	r := mux.NewRouter()
-	corsConfig := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://" + hostIP + ":3000", "http://localhost:3000"},
-		AllowCredentials: true,
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
-		AllowedHeaders:   []string{"*"},
-	})
+	api.InitRouter()
 
-	handler := corsConfig.Handler(r)
-
-	r.HandleFunc("/yaml", controller.ParseYamlFile).Methods("POST")
-	r.HandleFunc("/api/v1/run", controller.RunWorkflow).Methods("POST")
-
-	http.ListenAndServe(":" + string(goPort), handler)
+	log.Println("Server started on: server")
 }
