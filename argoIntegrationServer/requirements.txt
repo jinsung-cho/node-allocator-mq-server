@@ -1,0 +1,4 @@
+argo_workflows==6.5.2
+python-dotenv==1.0.1
+flask==2.3.2
+flask_cors==4.0.0
