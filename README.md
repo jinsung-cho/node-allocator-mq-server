@@ -20,46 +20,52 @@
 프로젝트의 디렉토리 구조는 다음과 같습니다:
 
 ```
-├── argo_request_server.py
-├── controller
-│   └── workflow.go
-├── .env-sample
+├── argoIntegrationServer
+│   ├── main.py
+│   └── requirements.txt
 ├── go.mod
 ├── go.sum
+├── internal
+│   ├── api
+│   ├── manifest
+│   │   └── yaml.go
+│   ├── models
+│   │   └── struct.go
+│   └── mq
+│       └── pubsub.go
 ├── main.go
 ├── nodeAllocator
-│   ├── goVersion
+│   ├── golang
 │   │   ├── go.mod
 │   │   ├── go.sum
 │   │   └── main.go
-│   └── pythonVersion
-│       └── main.py
-├── rabbitmq
+│   └── python
+│       ├── main.py
+│       └── requirements.txt
+├── pkg
+│   └── handler
+│       └── handler.go
+├── rabbitmq-docker
 │   └── docker-compose.yaml
 ├── README.md
-├── requirements.txt
-├── start.sh
-└── util
-    ├── handler.go
-    ├── pubsub.go
-    ├── struct.go
-    └── yaml.go
+├── .env-sample
+└── start.sh
 ```
-- **argo_request_server.py** -: argo workflow의 workflow list 수신 및 workflow 실험을 시작할 수 있도록 go 기반 API 서버와 연계하여 동작하는 python 기반 서버 코드
-- **controller** : http request를 처리하는 함수가 작성된 코드 디렉토리
-    - **workflow.go** : workflow 처리에 대한 코드가 작성된 go 코드
+- **argoIntegrationServer** : argo workflow의 workflow list 수신 및 workflow 실험을 시작할 수 있도록 go 기반 API 서버와 연계하여 동작하는 python 기반 서버 코드와 Package 버전 관리 파일이 포함된 디렉토리
+- **internal** : 본 프로젝트에 한정되어 동작하는 코드
+    - **api** : workflow 처리 및 실행 대한 API 요청 처리 코드가 위치한 디렉토리
+    - **manifest** : API 요청에 포함된 매니페스트 파일 파싱 및 수정을 위한 코드가 위치한 디렉토리
+    - **models** : stuct 구조가 정의된 코드가 위치한 디렉토리
+    - **mq** : mq에 pub/sub 요청을 위한 코드가 위치한 디렉토리
 - **main.go** : go 기반 API 서버 실행을 위한 시작 코드
 - **nodeAllocator** : nodeSelector를 추가하는 알고리즘을 시뮬레이션 할 수 있도록 동작 시키는 코드(실제로는 케이웨어에서 동작해야하는 코드)
-    - **goVersion/main.go** : go로 작성된 nodeSelector 추가 코드
-    - p**ythonVersion/main.go** : python으로 작성된 nodeSelector 추가 코드
-- **rabbitmq** : rabbitMQ를 컨테이너로 실행시키기 위한 dock-compose.yaml 파일이 포함된 디렉토리
-    - d**ocker-compose.yaml** : docker-compose up을 위한 파일
+    - **golang** : 원본 매니페스트에서 자원 요청량에 따른 nodeSelector를 추가하기 위한 golang 코드가 포함된 디렉토리
+    - **python** : 원본 매니페스트에서 자원 요청량에 따른 nodeSelector를 추가하기 위한 python 코드가 포함된 디렉토리
+- **rabbitmq-docker** : rabbitMQ를 컨테이너로 실행시키기 위한 dock-compose.yaml 파일이 포함된 디렉토리
 - **start.sh** : rabbitmq, go 서버, python 서버, nodeAllocator의 실행을 자동화 하기 위한 스크립트 파일
-- **util** : controller에서 데이터 처리 및 mq publish/subscribe 등 수행되는 여러 함수들의 코드가 있는 디렉토리
+- **pkg** : 본 프로젝트 및 외부 프로젝트에서 공용으로 사용되는 핸들러 함수가 포함된 디렉토리
     - **handler.go** : 에러 처리 및 에러에 대한 http response를 위한 핸들러 함수
-    - **pubsub.go** : rabitmq 에 메시지를 publish/subscribe 하기 위한 함수
-    - **struct.go** : go API 서버에서 사용하는 구조체 정의
-    - **yaml.go** : json으로 변환한 yaml파일을 parsing하고 modify 하기 위한 코드
+
 
 ## REST API
 **POST - {SERVER_IP}:{SERVER_PORT}/yaml**
@@ -123,7 +129,8 @@
                   },
                  생략...
           ```
-            
+
+
 - response (nodeSelector 관련 내용 추가)
   - argo workflow json with nodeSelector
     - example 
@@ -200,13 +207,15 @@
 - response
   - succeed - status 200
   - failed - status 500
-     
+
+```
 ## 실행방법
 1. `$ git clone https://github.com/jinsung-cho/node-allocator-mq-server.git`
 2. `$ mv .env-sample .env`
 3. `$ vim .env`
 4. .env 파일 수정
-   
+```
+
 ```
 ######## 초기 상태 ########
 MQ_ID=rabbit
@@ -243,5 +252,6 @@ ARGO_WORKFLOW_PORT=30000
 GO_SERVER_PORT=8080
 PYTHON_SERVER_PORT=8888
 ```
-
+```
 5. `$ ./start.sh`
+```
