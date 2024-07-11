@@ -62,6 +62,17 @@ def get_workflow_info():
                     end_time = time.mktime(datetime.datetime.strptime(now,'%Y-%m-%dT%H:%M:%SZ').timetuple())
                 
                 split_duration = str(datetime.timedelta(seconds=end_time - start_time)).split(':')
+                
+                # set time 'n day k' to 'n*24+k'
+                # if split_duration's time is over 24, timedelta do it on 'n day k' format
+                # So it should be change like int(n*24+k) format
+                
+                if ' day' in split_duration[0]:
+                    days_hours = split_duration[0].split()
+                    days = int(days_hours[0])
+                    hours = int(days_hours[2]) + (days * 24)
+                    split_duration[0] = str(hours)
+                    
                 split_duration = [str(int(x)) for x in split_duration]
                 if split_duration[0]=='0':
                     if split_duration[1]=='0':
@@ -97,4 +108,4 @@ def run_workflow():
     
 if __name__ == '__main__':
     port = os.getenv("PYTHON_SERVER_PORT")
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)
